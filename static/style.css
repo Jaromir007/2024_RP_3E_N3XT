@@ -16,6 +16,7 @@ h2 {
     margin: 10px;
 }
 hr {
+    box-sizing: border-box;
     border-color:#ff7f3f;
     margin: 0;
     width: 100%;
