@@ -3,18 +3,34 @@
 <header class="header">
     <div class="header__content-wrapper">
         <div class="header__inner">
-            <a href="/" class="header__logo">
-                <img src="{% static 'images/header-logo.png' %}" alt="N3XT Slicer Logo">
-            </a>
-            <nav class="header__menu">
-                <ul>
-                    <li><a href="">Home</a></li>
-                    <li><a href="">About</a></li>
-                    <li><a href="">App</a></li>
-                    <li><a href="">Donate</a></li>
+            <a class="header__logo" href="">N<span>3</span>XT</a>
+            <nav class="header__nav" id="headerNav">
+                <ul class="header__menu">
+                    <li class="header__menu-item"><a href="#">About</a></li>
+                    <li class="header__menu-item"><a href="#">Features</a></li>
+                    <li class="header__menu-item"><a href="#">App</a></li>
+                    <li class="header__menu-item"><a href="#">Donate</a></li>
                 </ul>
+                <a href="#" class="thm-btn header__cta--mobile">
+                    Slice
+                </a>
             </nav>
-            <a href="" class="thm-btn header__button">Button</a>
+            <div class="header__right">
+                <i class="fas fa-search header__search-button-icon" id="searchIcon"></i>
+                <a href="#" class="thm-btn header__cta">
+                    Slice
+                </a>
+                <button class="header__hamburger-button" id="hamburgerButton">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="header__search-bar" id="searchBar">
+        <div class="header__search-bar-inner">
+            <input type="text" placeholder="Search..." id="searchInput">
         </div>
     </div>
 </header>
