@@ -7,12 +7,19 @@ N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal
 
 1. **Create a virtual environment:**
     ```bash
-    python -m venv venv
+    python -m venv .venv
     ```
 
 2. **Activate the virtual environment:**
+
+    **On Windows (Git bash):**
     ```bash
-    source venv/bin/activate
+    source .venv\Scripts\activate
+    ```
+
+    **On Linux/MacOS:**
+    ```bash
+    source .venv/bin/activate
     ```
 
 3. **Install the required packages:**
@@ -29,5 +36,3 @@ N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal
     ```bash
     python manage.py runserver
     ```
-
-
