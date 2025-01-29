@@ -14,7 +14,7 @@ N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal
 
     **On Windows (Git bash):**
     ```bash
-    source .venv\Scripts\activate
+    source .venv/Scripts/activate
     ```
 
     **On Linux/MacOS:**
