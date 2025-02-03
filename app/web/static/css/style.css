@@ -91,6 +91,7 @@ html {
     font-weight: 400;
     font-style: normal;
     scroll-behavior: smooth;
+    text-rendering: geometricPrecision;
 }
 
 /* Global resets */
@@ -163,9 +164,14 @@ img {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: fit-content;
-    max-width: fit-content;
+    width: fit-content;
+    width: fit-content;
     gap: 0.75rem;
+    font-weight: 500;
+}
+
+.thm-btn--large {
+    padding: 0.75rem 2rem;
 }
 
 .thm-btn__arrow {
@@ -191,6 +197,11 @@ p {
     line-height: 1.5;
     max-width: 60ch;
     margin-bottom: 0.5rem;
+}
+
+p > strong {
+    color: var(--black);
+    font-weight: 500;
 }
 
 h1,
@@ -252,6 +263,7 @@ h6 {
 .header__menu-item>a {
     color: var(--black);
     position: relative;
+    font-weight: 500;
 }
 
 .header__right {
@@ -358,11 +370,28 @@ h6 {
 }
 
 .hero__title {
-    font-size: 2.25rem;
+    font-size: clamp(2.5rem, 2.5vw, 4rem);
 }
 
 .hero__text {
     margin-bottom: var(--gap-sm);
+}
+
+.hero__inner {
+    display: flex;
+    gap: var(--gap-lg);
+}
+
+.hero__inner > * {
+    flex: 1;
+}
+
+.hero__right {
+    display: flex;
+    justify-content: center;
+}
+.hero__img {
+    max-height: 20rem;
 }
 
 
