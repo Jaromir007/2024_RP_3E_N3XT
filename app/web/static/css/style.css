@@ -156,7 +156,7 @@ img {
 .thm-btn {
     padding: 0.5rem 1.375rem;
     border-radius: 0.5rem;
-    background-color: var(--orange-100);
+    background-color: var(--orange-50);
     border: solid 1px var(--orange-900);
     color: var(--orange-900);
     transition: background-color var(--transition-default) ease-in;
@@ -165,6 +165,16 @@ img {
     justify-content: center;
     min-width: fit-content;
     max-width: fit-content;
+    gap: 0.75rem;
+}
+
+.thm-btn__arrow {
+    transform: rotate(-45deg);
+    transition: transform var(--transition-default) ease;
+}
+
+.thm-btn:hover .thm-btn__arrow {
+    transform: rotate(0);
 }
 
 /* Header */
@@ -181,7 +191,7 @@ img {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: solid 1px var(--grey-100);
+    border-bottom: solid 1px var(--grey-200);
     padding: 1rem var(--padding-default);
     background-color: var(--white);
 }
@@ -215,10 +225,6 @@ img {
 .header__menu-item>a {
     color: var(--black);
     position: relative;
-}
-
-.header__menu-item>a:hover {
-    color: var(--grey-900);
 }
 
 .header__right {
@@ -280,7 +286,7 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgb(252, 252, 252);
+    background-color: var(--grey-50);
     transition: all 300ms ease;
     transform: translateY(-100%);
     z-index: -1;
@@ -309,7 +315,7 @@ img {
     font-weight: 500;
     position: relative;
     padding: 0.5rem var(--padding-default);
-    border-bottom: solid 2px var(--grey-200);
+    border-bottom: solid 2px var(--grey-300);
 }
 
 .header__search-bar-inner input::placeholder {
@@ -352,7 +358,7 @@ img {
         right: 0;
         top: 0;
         width: 100%;
-        background-color: var(--grey-100);
+        background-color: var(--grey-50);
         padding: 5.75rem 4rem 4rem 4rem;
         gap: var(--gap-lg);
         min-height: 100vh;
@@ -361,6 +367,7 @@ img {
         transition: transform var(--transition-default) ease-in;
         visibility: hidden;
         transform: translateX(100%);
+        border-left: solid 1px var(--grey-200);
     }
 
     .header__nav.active {
