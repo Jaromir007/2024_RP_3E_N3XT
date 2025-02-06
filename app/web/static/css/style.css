@@ -87,6 +87,7 @@
 
     /* Border radius */
     --border-radius: 0.5rem;
+    --btn-border-radius: 0.5rem;
 }
 
 /* Font settings */
@@ -187,17 +188,21 @@ h6 {
 
 .thm-btn {
     padding: 0.5rem 1.375rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--btn-border-radius);
     background-color: var(--white);
-    border: solid 1px var(--orange-900);
-    color: var(--orange-900);
+    border: solid 1px var(--blue-900);
+    color: var(--blue-900);
     transition: background-color var(--transition-default) ease-in;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: fit-content;
     gap: 0.75rem;
-    font-weight: 500;
+    font-weight: 500;;
+}
+
+.thm-btn:hover {
+    background-color: var(--blue-50);
 }
 
 .btn--large {
@@ -209,9 +214,37 @@ h6 {
     transition: transform var(--transition-default) ease;
 }
 
-/* .thm-btn:hover .thm-btn__arrow {
-    transform: rotate(0);
-} */
+.section {
+    padding: var(--section-gap) 0;
+}
+
+.section__header {
+    display: flex;
+    flex-direction: column;
+}
+
+.section__tag {
+    display: grid;
+    place-content: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--blue-900);
+    background-color: var(--blue-50);
+    padding: 0.5rem 1rem;
+    border-radius: 10rem;
+    max-width: fit-content;
+    margin-bottom: 0.5rem;
+}
+
+.section__header--center {
+    align-items: center;
+    text-align: center;
+}
+
+.section__title {
+    font-size: clamp(1.75rem, 3vw, 2rem);
+}
 
 .container {
     max-width: 1440px;
@@ -254,7 +287,7 @@ h6 {
 }
 
 .header__logo span {
-    color: var(--orange-900);
+    color: var(--blue-900);
 }
 
 .header__menu {
@@ -486,7 +519,7 @@ h6 {
         --padding-default: 1rem;
         --gap-sm: 1rem;
         --gap-md: 1.25rem;
-        --section-gap: 3rem
+        --section-gap: 2rem
     }
 
     .header__content-wrapper {
