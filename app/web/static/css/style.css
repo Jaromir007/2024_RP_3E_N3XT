@@ -75,7 +75,7 @@
 
     /* Gap */
     --gap-mn: 1rem;
-    --gap-sm: 1.75rem;
+    --gap-sm: 1.5rem;
     --gap-md: 2rem;
     --gap-lg: 2.5rem;
 
@@ -187,26 +187,40 @@ h6 {
 /* Theme elements */
 
 .thm-btn {
+    position: relative;
     padding: 0.5rem 1.375rem;
     border-radius: var(--btn-border-radius);
     background-color: var(--white);
-    border: solid 1px var(--blue-900);
+    border: solid 1.5px var(--blue-900);
     color: var(--blue-900);
-    transition: background-color var(--transition-default) ease-in;
+    transition: all var(--transition-default) ease-in;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: fit-content;
     gap: 0.75rem;
-    font-weight: 500;;
+    font-weight: 500;
+    overflow: hidden;
+    z-index: 999;
 }
 
 .thm-btn:hover {
-    background-color: var(--blue-50);
+    background-color: var(--blue-900);
+    color: var(--white);
 }
 
 .btn--large {
     padding: 0.75rem 2rem;
+}
+
+.btn--secondary {
+    background-color: var(--blue-900);
+    color: var(--white);
+}
+
+.btn--secondary:hover {
+    background-color: var(--white);
+    color: var(--blue-900);
 }
 
 .thm-btn__arrow {
@@ -418,7 +432,8 @@ h6 {
 }
 
 .hero__text {
-    margin-bottom: var(--gap-sm);
+    margin-bottom: 0.5rem;
+    max-width: 50ch;
 }
 
 .hero__inner {
@@ -427,7 +442,7 @@ h6 {
 }
 
 .hero__left {
-    flex-basis: 50%;
+    flex-basis: 30%;
     flex-shrink: 0;
 }
 
@@ -440,8 +455,40 @@ h6 {
     display: flex;
     gap: var(--gap-mn);
     flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
+.hero__stars {
+    color: rgb(255, 217, 0);
+    line-height: 2rem;
+}
+
+
+/* Features */
+
+.features__inner {
+    display: grid;
+    gap: var(--gap-sm);
+}
+
+.features__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-sm);
+}
+
+.features__single {
+    background-color: var(--grey-100);
+    padding: 2.25rem 2rem;
+    border-radius: var(--border-radius);
+    border: solid 1px var(--grey-300);
+}
+
+.features__single>h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
 
 /* Display only on mobile screen */
 
@@ -530,7 +577,7 @@ h6 {
         display: none;
     }
 
-    .hero__button-box > * {
+    .hero__button-box>* {
         width: 100%;
     }
 }
