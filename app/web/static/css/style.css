@@ -187,13 +187,12 @@ h6 {
 /* Theme elements */
 
 .thm-btn {
-    position: relative;
     padding: 0.5rem 1.375rem;
     border-radius: var(--btn-border-radius);
     background-color: var(--white);
     border: solid 1.5px var(--blue-900);
     color: var(--blue-900);
-    transition: all var(--transition-default) ease-in;
+    transition: color, background-color var(--transition-default) ease-in;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -555,11 +554,11 @@ h6 {
         gap: var(--gap-lg);
         min-height: 100vh;
         max-width: 20rem;
-        z-index: 1;
         transition: transform var(--transition-default) ease-in;
         visibility: hidden;
         transform: translateX(100%);
         border-left: solid 1px var(--grey-200);
+        z-index: 1;
     }
 
     .header__nav.active {
