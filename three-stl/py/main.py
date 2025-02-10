@@ -22,12 +22,12 @@ def parseSTL(fileIn):
 
 
 
-triangles = parseSTL("../models/stl-whistle.stl")
+triangles = parseSTL("../models/3dbenchy.stl")
 
 slicer = Slicer()
 layers = slicer.slice(triangles)
 
-with open("../models/pokus-sliced.json", "w") as f:
+with open("../models/benchy-sliced.json", "w") as f:
     json.dump(layers, f, indent=2)
 
 print("Slicing complete!")
