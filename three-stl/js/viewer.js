@@ -199,7 +199,6 @@ function handleFile(event) {
         mesh.rotation.x = Math.PI / 2;
         mesh.scale.set(1, 1, -1);
 
-        mesh.name = 'imported';
         importedObjects.push(mesh);
         scene.add(mesh);
 

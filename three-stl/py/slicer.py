@@ -1,4 +1,3 @@
-import json
 import time
 
 class Slicer:
@@ -9,16 +8,12 @@ class Slicer:
         
 
     def _slice_model(self):
+        t = time.time()
         z_min = min(v[2] for tri in self.triangles for v in tri)
-
-        if z_min < 0:
-            for tri in self.triangles:
-                for v in tri:
-                    v[2] -= z_min  
-            z_min = 0  
-
         z_max = max(v[2] for tri in self.triangles for v in tri)
 
+        print(f"[TIMING] z_max: {time.time() - t:.4f}s")
+        
         z = z_min
         while z <= z_max:
             layer = self._slice_at_z(z)
@@ -26,15 +21,18 @@ class Slicer:
                 self.layers.append(layer)
             z += self.layer_height
 
-
+        print(f"[TIMING] _slice_model: {time.time() - t:.4f}s")
         return self.layers
 
     def _slice_at_z(self, z):
+        t = time.time()
         intersections = []
         for tri in self.triangles:
             points = self._intersect_triangle(tri, z)
             if points:
                 intersections.append(points)
+        
+        print(f"[TIMING] _slice_at_z: {time.time() - t:.4f}s")
         return intersections if intersections else None
 
     def _intersect_triangle(self, tri, z):
@@ -54,14 +52,21 @@ class Slicer:
                     points.append((v1[0], v1[1]))  
 
         return points if len(points) == 2 else None
+    
+    def _reset(self):
+        self.start_time = 0; 
+        self.triangles = []; 
+        self.layers = []
+    
 
     def set_leayer_height(self, height):
         self.layer_height = height
 
     def slice(self, triangles):
-        start_time = time.time()
+        self.start_time = time.time()
         self.triangles = triangles
         layers = self._slice_model()
-        print(f"[TIMING] Slicing took: {time.time() - start_time:.4f}s")
+        print(f"[TIMING] Slicing took: {time.time() - self.start_time:.4f}s")
+        self._reset()
 
         return layers
