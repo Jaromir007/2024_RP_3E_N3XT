@@ -1,6 +1,7 @@
 import json
 import struct
 from slicer import Slicer
+from gcode import generate_gcode
 
 
 def parseSTL(fileIn):
@@ -26,8 +27,12 @@ triangles = parseSTL("../models/3dbenchy.stl")
 
 slicer = Slicer()
 layers = slicer.slice(triangles)
+gcode = generate_gcode(layers)
 
 with open("../models/benchy-sliced.json", "w") as f:
     json.dump(layers, f, indent=2)
+
+with open("../models/benchy-gcode", "w") as g:
+    g.write(gcode)
 
 print("Slicing complete!")
