@@ -224,12 +224,10 @@ function handleJson(event) {
 function drawLayers(layers) {
     const vertices = [];
 
-    layers.forEach((layer, index) => {
-        const zHeight = index * 0.2;
-        layer.forEach(segment => {
-            segment.forEach(p => {
-                vertices.push(p[0], zHeight, p[1]);
-            });
+    layers.forEach((layer, i) => {
+        const zHeight = i * 0.2;
+        layer.forEach(p => {
+            vertices.push(p[0], zHeight, p[1]);
         });
     });
 

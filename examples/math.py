@@ -109,14 +109,19 @@ def _intersect_triangle(tri, z_p):
 
 # --------------------------------------------------------------------------------------------------------- #
 
-triangles = [(1, 2, 3), (4, 5, 6), (7, 8, 9)], [(1, 2, 3), (4, 5, 6), (7, 8, 9)],[(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+triangles = [(1, 2, 3), (4, 5, 6), (7, 8, 9)], [(19, 25, 34), (44, 53, 6), (73, 83, 94)],[(14, 23, 32), (42, 50, 66), (7, 1, 9)]
 
 def slice_model(triangles): 
     points = []
+    layers = []
+    bounds = [(min(v[2] for v in tri), max(v[2] for v in tri)) for tri in triangles]
+    print(f'Bounds: {bounds}')
+
     for tri in triangles:
         edges = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
 
         for v1, v2 in edges:
+
             p = _find_intersection(v1, v2, z_p)
             if p:
                 points.append(p)

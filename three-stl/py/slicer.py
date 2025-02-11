@@ -9,16 +9,14 @@ class Slicer:
         self.start_time = 0
 
     def _precompute_z_bounds(self):
-        t = time.time()
+        # Bounds for each triangle
         self.triangle_bounds = [(min(v[2] for v in tri), max(v[2] for v in tri)) for tri in self.triangles]
-        print(f"[TIMING] _precompute_z_bounds: {time.time() - t:.4f}s")
 
     def _slice_model(self):
+        # Main slicing function
         t = time.time()
         z_min = min(z[0] for z in self.triangle_bounds)
         z_max = max(z[1] for z in self.triangle_bounds)
-
-        print(f"[TIMING] Compute z_min and z_max: {time.time() - t:.4f}s")
 
         layers = []
         z = z_min
@@ -33,7 +31,7 @@ class Slicer:
         return self.layers
 
     def _slice_at_z(self, z):
-        t = time.time()
+        # Intersection at z layer
         intersections = []
         
         for i in range(len(self.triangles)):
@@ -42,12 +40,12 @@ class Slicer:
             if z_min <= z <= z_max:  
                 points = self._intersect_triangle(self.triangles[i], z)
                 if points:
-                    intersections.append(points)
+                    intersections.extend(points)
 
-        print(f"[TIMING] _slice_at_z({z}): {time.time() - t:.4f}s")
         return intersections if intersections else None
 
     def _intersect_triangle(self, tri, z):
+        # Intersection at z in a single triangle
         edges = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
         points = []
 
