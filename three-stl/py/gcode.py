@@ -17,20 +17,20 @@ def generate_gcode(layers, layer_height=0.2, extrusion_multiplier=0.05, feedrate
         if not layer:
             continue  
 
-        first_point = layer[0]
-        gcode.append(f"G1 X{first_point[0]:.3f} Y{first_point[1]:.3f} F{feedrate}")  
+        p = layer[0]
+        gcode.append(f"G1 X{p[0]:.3f} Y{p[1]:.3f} F{feedrate}")  
 
-        prev_x, prev_y = first_point
+        x2, y2 = p
         extruder_position = 0  
 
-        for x, y in layer[1:]:
-            distance = math.sqrt((x - prev_x) ** 2 + (y - prev_y) ** 2)
+        for x1, y1 in layer[1:]:
+            distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
             extrusion = distance * extrusion_multiplier
 
             extruder_position += extrusion
-            gcode.append(f"G1 X{x:.3f} Y{y:.3f} E{extruder_position:.5f} F{feedrate}")
+            gcode.append(f"G1 X{x1:.3f} Y{y1:.3f} E{extruder_position:.5f} F{feedrate}")
 
-            prev_x, prev_y = x, y
+            x2, y2 = x1, y1
 
         current_z += layer_height 
 
