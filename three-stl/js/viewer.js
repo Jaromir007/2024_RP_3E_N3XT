@@ -199,15 +199,27 @@ function handleFile(event) {
         mesh.rotation.x = Math.PI / 2;
         mesh.scale.set(1, 1, -1);
 
-        importedObjects.push(mesh);
         scene.add(mesh);
+        objectInfo(file.name, mesh);
 
         console.log('STL file imported:', mesh);
     };
     reader.readAsArrayBuffer(file);
 }
 
+function objectInfo(name, mesh) {
+    const objectInfo = {
+        name: name,
+        position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
+        rotation: { x: THREE.MathUtils.radToDeg(mesh.rotation.x), y: THREE.MathUtils.radToDeg(mesh.rotation.y), z: THREE.MathUtils.radToDeg(mesh.rotation.z) },
+        scale: { x: mesh.scale.x * 100, y: mesh.scale.y * 100, z: mesh.scale.z * 100 }
+    };
 
+    importedObjects.push({ mesh, objectInfo });
+
+    // Debugging statement
+    console.log('Object created:', objectInfo);
+}
 
 function handleJson(event) {
     const file = event.target.files[0];
@@ -242,6 +254,7 @@ function drawLayers(layers) {
 }
 
 function clearScene() {
-    importedObjects.forEach(obj => scene.remove(obj));
+    importedObjects.forEach(obj => scene.remove(obj.mesh || obj));
     importedObjects = [];
+    console.log('Scene cleared');
 }
