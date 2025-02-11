@@ -104,4 +104,22 @@ def _intersect_triangle(tri, z_p):
     return points
         
 
-print(_intersect_triangle(tri, z_p))
+# print(_intersect_triangle(tri, z_p))
+
+
+# --------------------------------------------------------------------------------------------------------- #
+
+triangles = [(1, 2, 3), (4, 5, 6), (7, 8, 9)], [(1, 2, 3), (4, 5, 6), (7, 8, 9)],[(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+
+def slice_model(triangles): 
+    points = []
+    for tri in triangles:
+        edges = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
+
+        for v1, v2 in edges:
+            p = _find_intersection(v1, v2, z_p)
+            if p:
+                points.append(p)
+    return points
+
+print(slice_model(triangles))
