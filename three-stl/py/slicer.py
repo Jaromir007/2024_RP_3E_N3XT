@@ -20,11 +20,13 @@ class Slicer:
 
         layers = []
         z = z_min
+        layer_index = 0
         while z <= z_max:
             layer = self._slice_at_z(z)
             if layer:
                 layers.append(layer)
-            z += self.layer_height
+            z = self.layer_height * layer_index
+            layer_index +=1
 
         self.layers = layers
         print(f"[TIMING] _slice_model: {time.time() - t:.4f}s")

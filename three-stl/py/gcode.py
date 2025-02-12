@@ -10,7 +10,7 @@ def generate_gcode(layers, layer_height=0.2, extrusion_multiplier=0.05, feedrate
     gcode.append("G28 ; ")
     gcode.append("G92 E0 ;")
 
-    current_z = 0.2  # Layer Z height
+    current_z = 0.2  
     for layer in layers:
         gcode.append(f"G1 Z{current_z:.2f} F{feedrate}")  
         
