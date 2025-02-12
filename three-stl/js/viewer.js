@@ -41,11 +41,11 @@ function init() {
 
 function handleKeyDown(event) {
     switch (event.key.toLowerCase()) {
-        case 'b': // Reset to default position
+        case 'b': // Reset 
             controls.reset();
             camera.position.set(0, 100, 200);
             break;
-        case 'z': // Zoom out to fit scene
+        case 'z': // Zoom out 
             zoomToScene();
             break;
         case '0': // Isometric view
@@ -195,9 +195,9 @@ function handleFile(event) {
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
         const mesh = new THREE.Mesh(geometry, material);
 
-        mesh.position.set(-center.x, 0, -center.z - minY);
+        mesh.position.set(center.x, -center.y, -center.z - minY);
         mesh.rotation.x = Math.PI / 2;
-        mesh.scale.set(1, 1, -1);
+        mesh.rotation.y = Math.PI;
 
         scene.add(mesh);
         objectInfo(file.name, mesh);
@@ -212,12 +212,11 @@ function objectInfo(name, mesh) {
         name: name,
         position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
         rotation: { x: THREE.MathUtils.radToDeg(mesh.rotation.x), y: THREE.MathUtils.radToDeg(mesh.rotation.y), z: THREE.MathUtils.radToDeg(mesh.rotation.z) },
-        scale: { x: mesh.scale.x, y: mesh.scale.y, z: mesh.scale.z}
+        scale: { x: mesh.scale.x, y: mesh.scale.y, z: mesh.scale.z }
     };
 
     importedObjects.push({ mesh, objectInfo });
 
-    // Debugging statement
     console.log('Object created:', objectInfo);
 }
 
