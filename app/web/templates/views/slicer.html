@@ -1,0 +1,12 @@
+{% extends 'app.html' %}
+
+{% block content %}
+
+<div class="app__inner">
+    <input type="file" id="fileInput" accept=".stl" style="display: none;">
+    <input type="file" id="jsonInput" accept=".json" style="display: none;">
+    <button id="clearButton">Clear</button>
+    <canvas id="mainCanvas"></canvas>
+</div>
+
+{% endblock %}

@@ -528,6 +528,9 @@ canvas {
 
 /* App */
 
+.app__inner~.page__inner {
+    max-height: 100vh;
+}
 
 /* Display only on mobile screen */
 

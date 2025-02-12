@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{% static 'images/icons/n3xt-favicon.ico'%}" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+                "three/examples/jsm/loaders/STLLoader": "https://unpkg.com/three@0.150.1/examples/jsm/loaders/STLLoader.js",
+                "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.150.1/examples/jsm/controls/OrbitControls.js"
+            }
+        }
+    </script>
+    <title>N3XT App</title>
+</head>
+
+<body>
+    {% block content %}
+    <!-- load from views -->
+    {% endblock content %}
+</body>
+
+<script type="module" src="{% static 'js/slicer.js'%}"></script>
+
+</html>
