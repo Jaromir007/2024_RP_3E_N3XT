@@ -273,10 +273,6 @@ canvas {
     padding: 0 var(--padding-default);
 }
 
-.page__inner {
-    /* min-height: 100vh; */
-}
-
 /* Header */
 
 .header {

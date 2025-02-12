@@ -29,13 +29,15 @@ function init() {
     controls.screenSpacePanning = false;
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.DOLLY,
+        MIDDLE: THREE.MOUSE.PAN,
+        RIGHT: THREE.MOUSE.DOLLY
     };
+
 
     addPrintBed();
     addLighting();
 
-    document.getElementById('fileInput').addEventListener('change', handleFile);
+    document.getElementById('fileInput').addEventListener('change', handleSTL);
     document.getElementById('jsonInput').addEventListener('change', handleJson);
     document.getElementById('clearButton').addEventListener('click', clearScene);
 
@@ -111,7 +113,7 @@ function animate() {
 function addPrintBed() {
     const bedSize = 250;
     const bedHeight = 2;
-    const bedColor = 0x121212;
+    const bedColor = 0x131313;
     const lineColor = 0x666666;
     const smallLineColor = 0x555555;
 
@@ -175,12 +177,12 @@ function addPrintBed() {
 
 function addLighting() {
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(10, 10, 10);
+    light.position.set(100, 100, 100);
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 }
 
-function handleFile(event) {
+function handleSTL(event) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -209,7 +211,7 @@ function handleFile(event) {
         scene.add(mesh);
         objectInfo(file.name, mesh);
 
-        console.log('STL file imported and centered:', mesh);
+        console.log('STL file imported:', mesh);
     };
     reader.readAsArrayBuffer(file);
 }
@@ -260,7 +262,26 @@ function drawLayers(layers) {
 }
 
 function clearScene() {
-    importedObjects.forEach(obj => scene.remove(obj.mesh || obj));
+    importedObjects.forEach(obj => {
+        if (obj.mesh) {
+            scene.remove(obj.mesh);
+            obj.mesh.geometry.dispose();
+            if (Array.isArray(obj.mesh.material)) {
+                obj.mesh.material.forEach(mat => mat.dispose());
+            } else {
+                obj.mesh.material.dispose();
+            }
+        } else {
+            scene.remove(obj);
+        }
+    });
+
     importedObjects = [];
+
     console.log('Scene cleared');
+
+    document.getElementById('fileInput').value = "";
+    document.getElementById('jsonInput').value = "";
+
+    renderer.render(scene, camera);
 }
