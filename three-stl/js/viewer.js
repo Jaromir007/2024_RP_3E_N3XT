@@ -4,6 +4,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 let scene, camera, renderer, controls, bed;
 let importedObjects = [];
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let selectedObjects = [];
+let hoveredObject = null;
 
 init();
 
@@ -31,7 +35,9 @@ function init() {
 
     document.getElementById('fileInput').addEventListener('change', handleFile);
     document.getElementById('jsonInput').addEventListener('change', handleJson);
-    document.getElementById('clearButton').addEventListener('click', clearScene);
+    document.getElementById('clearButton').addEventListener('click', clearSelectedObjects);
+    renderer.domElement.addEventListener('click', onClick, false);
+    renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
     window.addEventListener('resize', onWindowResize);
     window.addEventListener('keydown', handleKeyDown);
@@ -192,7 +198,7 @@ function handleFile(event) {
         bbox.getSize(size);
         const minY = bbox.min.y;
 
-        const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        const material = new THREE.MeshStandardMaterial({ color: 0xffa500 }); // Change color to orange
         const mesh = new THREE.Mesh(geometry, material);
 
         mesh.position.set(-center.x, 0, -center.z - minY);
@@ -219,6 +225,7 @@ function objectInfo(name, mesh) {
 
     // Debugging statement
     console.log('Object created:', objectInfo);
+    updateClearButtonState();
 }
 
 function handleJson(event) {
@@ -255,8 +262,107 @@ function drawLayers(layers) {
     scene.add(lines);
 }
 
-function clearScene() {
-    importedObjects.forEach(obj => scene.remove(obj.mesh || obj));
-    importedObjects = [];
-    console.log('Scene cleared');
+function clearSelectedObjects() {
+    selectedObjects.forEach(obj => {
+        scene.remove(obj);
+        importedObjects = importedObjects.filter(importedObj => importedObj.mesh !== obj);
+    });
+    selectedObjects = [];
+    console.log('Selected objects cleared');
+    updateClearButtonState();
+}
+
+function updateClearButtonState() {
+    const clearButton = document.getElementById('clearButton');
+    clearButton.disabled = importedObjects.length === 0;
+}
+
+function onClick(event) {
+    event.preventDefault();
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(importedObjects.map(obj => obj.mesh || obj));
+
+    if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        if (event.shiftKey) {
+            // Multi-select with Shift key
+            if (selectedObjects.includes(intersectedObject)) {
+                // Flash white and deselect the object
+                flashWhite(intersectedObject, () => {
+                    intersectedObject.material.color.set(0xffa500); // Change color back to orange
+                    selectedObjects = selectedObjects.filter(obj => obj !== intersectedObject);
+                    console.log('Object deselected:', intersectedObject);
+                });
+            } else {
+                // Select the object
+                intersectedObject.material.color.set(0x00ff00); // Change color to green
+                selectedObjects.push(intersectedObject);
+                console.log('Object selected:', intersectedObject);
+            }
+        } else {
+            // Single select without Shift key
+            if (selectedObjects.includes(intersectedObject)) {
+                // Do nothing if the object is already selected
+                console.log('Object already selected:', intersectedObject);
+            } else {
+                // Deselect all other objects
+                selectedObjects.forEach(obj => obj.material.color.set(0xffa500)); // Change previously selected objects color back to orange
+                selectedObjects = [];
+                // Select the new object
+                intersectedObject.material.color.set(0x00ff00); // Change color to green
+                selectedObjects.push(intersectedObject);
+                console.log('Object selected:', intersectedObject);
+            }
+        }
+    } else {
+        // Deselect all objects if clicking on the grid
+        selectedObjects.forEach(obj => obj.material.color.set(0xffa500)); // Change previously selected objects color back to orange
+        selectedObjects = [];
+        console.log('All objects deselected');
+    }
+}
+
+function onMouseMove(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(importedObjects.map(obj => obj.mesh || obj));
+
+    if (intersects.length > 0) {
+        const intersectedObject = intersects[0].object;
+        if (event.shiftKey && selectedObjects.includes(intersectedObject)) {
+            // Change color to white when hovering over a selected object with Shift key
+            if (hoveredObject !== intersectedObject) {
+                if (hoveredObject) {
+                    hoveredObject.material.color.set(0x00ff00); // Change back to green
+                }
+                intersectedObject.material.color.set(0xffffff); // Change color to white
+                hoveredObject = intersectedObject;
+            }
+        } else {
+            if (hoveredObject) {
+                hoveredObject.material.color.set(0x00ff00); // Change back to green
+                hoveredObject = null;
+            }
+        }
+    } else {
+        if (hoveredObject) {
+            hoveredObject.material.color.set(0x00ff00); // Change back to green
+            hoveredObject = null;
+        }
+    }
+}
+
+function flashWhite(object, callback) {
+    object.material.color.set(0xffffff); // Change color to white
+    setTimeout(() => {
+        callback();
+    }, 200); // Change back after 200ms
 }
