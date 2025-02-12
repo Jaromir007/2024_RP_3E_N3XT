@@ -3,20 +3,22 @@
 {% block content %}
 
 <header class="slicer__header">
-    <nav class="slicer__nav">
-        <a href="/" class="slicer__nav-item">Back</a>
-    </nav>
-</header>
+    <div class="slicer__header-inner">
+        <a href="/" class="slicer__back">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </a>
+        </nav>
+        <label for="fileInput" class="app-btn">STL</label>
+        <input type="file" id="fileInput" accept=".stl">
 
-<!-- <input type="file" id="fileInput" accept=".stl" style="display: none;">
-<input type="file" id="jsonInput" accept=".json" style="display: none;">
-<button id="clearButton">Clear</button> -->
-<main class="slicer__layout">
-    <canvas class="slicer__canvas" id="slicerCanvas"></canvas>
-    <aside class="slicer__sidebar">
-        .sidebar__inner
-    </aside>
+        <label for="jsonInput" class="app-btn">JSON</label>
+        <input type="file" id="jsonInput" accept=".json">
+
+        <button id="clearButton" class="app-btn app-btn--danger">Clear</button>
+    </div>
+</header>
+<canvas class="slicer__canvas" id="slicerCanvas"></canvas>
 </main>
-<canvas id="mainCanvas"></canvas>
 
 {% endblock %}

@@ -14,12 +14,11 @@ function init() {
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 100, 200);
 
-    const mainCanvas = document.getElementById("mainCanvas");
-
+    const slicerCanvas = document.getElementById("slicerCanvas");
     renderer = new THREE.WebGLRenderer({
         antialias: true,
         powerPreference: "high-performance",
-        canvas: mainCanvas
+        canvas: slicerCanvas
     });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -112,13 +111,13 @@ function animate() {
 function addPrintBed() {
     const bedSize = 250;
     const bedHeight = 2;
-    const bedColor = 0x333333;
+    const bedColor = 0x121212;
     const lineColor = 0x666666;
     const smallLineColor = 0x555555;
 
     const bedGeometry = new THREE.BoxGeometry(bedSize, bedHeight, bedSize);
     const bedMaterial = new THREE.MeshStandardMaterial({
-        color: 0x333333,
+        color: bedColor,
         roughness: 1,
         metalness: 0.1
     });
@@ -192,24 +191,25 @@ function handleFile(event) {
 
         geometry.computeBoundingBox();
         const bbox = geometry.boundingBox;
+
         const center = new THREE.Vector3();
         bbox.getCenter(center);
-
         const size = new THREE.Vector3();
         bbox.getSize(size);
-        const minY = bbox.min.y;
+
+        geometry.translate(-center.x, -center.y, -center.z);
 
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
         const mesh = new THREE.Mesh(geometry, material);
 
-        mesh.position.set(center.x, -center.y, -center.z - minY);
-        mesh.rotation.x = Math.PI / 2;
-        mesh.rotation.y = Math.PI;
+        mesh.rotation.set(-Math.PI / 2, 0, 0);
+
+        mesh.position.y = -bbox.min.z;
 
         scene.add(mesh);
         objectInfo(file.name, mesh);
 
-        console.log('STL file imported:', mesh);
+        console.log('STL file imported and centered:', mesh);
     };
     reader.readAsArrayBuffer(file);
 }
