@@ -29,16 +29,17 @@ function init() {
     controls.screenSpacePanning = false;
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.PAN,
-        RIGHT: THREE.MOUSE.DOLLY
+        MIDDLE: THREE.MOUSE.DOLLY,
+        // RIGHT: THREE.MOUSE.PAN 
+        // TODO fix returning back to position
     };
 
 
     addPrintBed();
     addLighting();
 
-    document.getElementById('fileInput').addEventListener('change', handleSTL);
-    document.getElementById('jsonInput').addEventListener('change', handleJson);
+    document.getElementById('fileInput').addEventListener('change', loadSTL);
+    document.getElementById('jsonInput').addEventListener('change', loadJson);
     document.getElementById('clearButton').addEventListener('click', clearScene);
 
     window.addEventListener('resize', onWindowResize);
@@ -182,7 +183,7 @@ function addLighting() {
     scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 }
 
-function handleSTL(event) {
+function loadSTL(event) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -229,7 +230,7 @@ function objectInfo(name, mesh) {
     console.log('Object created:', objectInfo);
 }
 
-function handleJson(event) {
+function loadJson(event) {
     const file = event.target.files[0];
     if (!file) return;
 
