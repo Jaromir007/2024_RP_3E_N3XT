@@ -1,7 +1,9 @@
 # 2024_RP_3E_N3XT
 N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal 
 
-[Prezentace](https://docs.google.com/presentation/d/1JVJeRS3xDeapZDWGwykHUfxAE9_kRY2ILhCKTlxtKJ4/edit?usp=sharing)
+[Prezentace 1](https://docs.google.com/presentation/d/1JVJeRS3xDeapZDWGwykHUfxAE9_kRY2ILhCKTlxtKJ4/edit?usp=sharing)
+
+[Prezentace 2](https://docs.google.com/presentation/d/1lx2NM3tQIRyjscBn8-69G_tDTQ_a8WnBYybl524v9OQ/edit?usp=sharing)
 
 ## How to run:
 
