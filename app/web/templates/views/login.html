@@ -5,7 +5,9 @@
 {% block content %}
 
 {% load socialaccount %}
-<h2>Login</h2>
-<a href="{% provider_login_url 'google' %}?next=/">Login Button</a>
+
+<h2>Login Page</h2>
+<a href="{% url 'account_login' %}">Login</a>
+<a href="{% url 'logout' %}">Logout</a>
 
 {% endblock content %}
