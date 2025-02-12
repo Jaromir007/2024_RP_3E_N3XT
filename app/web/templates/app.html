@@ -13,6 +13,7 @@
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="{% static 'css/app.css'%}">
     <script type="importmap">
         {
             "imports": {
@@ -26,9 +27,11 @@
 </head>
 
 <body>
-    {% block content %}
-    <!-- load from views -->
-    {% endblock content %}
+    <div class="app__inner">
+        {% block content %}
+        <!-- load from views -->
+        {% endblock content %}
+    </div>
 </body>
 
 <script type="module" src="{% static 'js/slicer.js'%}"></script>

@@ -2,11 +2,21 @@
 
 {% block content %}
 
-<div class="app__inner">
-    <input type="file" id="fileInput" accept=".stl" style="display: none;">
-    <input type="file" id="jsonInput" accept=".json" style="display: none;">
-    <button id="clearButton">Clear</button>
-    <canvas id="mainCanvas"></canvas>
-</div>
+<header class="slicer__header">
+    <nav class="slicer__nav">
+        <a href="/" class="slicer__nav-item">Back</a>
+    </nav>
+</header>
+
+<!-- <input type="file" id="fileInput" accept=".stl" style="display: none;">
+<input type="file" id="jsonInput" accept=".json" style="display: none;">
+<button id="clearButton">Clear</button> -->
+<main class="slicer__layout">
+    <canvas class="slicer__canvas" id="slicerCanvas"></canvas>
+    <aside class="slicer__sidebar">
+        .sidebar__inner
+    </aside>
+</main>
+<canvas id="mainCanvas"></canvas>
 
 {% endblock %}

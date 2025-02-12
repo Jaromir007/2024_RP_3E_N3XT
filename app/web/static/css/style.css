@@ -526,11 +526,7 @@ canvas {
     font-size: 0.875rem;
 }
 
-/* App */
 
-.app__inner~.page__inner {
-    max-height: 100vh;
-}
 
 /* Display only on mobile screen */
 

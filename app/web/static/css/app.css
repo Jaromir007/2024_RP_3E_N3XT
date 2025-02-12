@@ -1,0 +1,17 @@
+/* 
+
+CSS file for the app, extends main style.css
+
+*/
+
+.app__inner {
+    max-height: 100vh;
+}
+
+.app__sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 400px;
+}
