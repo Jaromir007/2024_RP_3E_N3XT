@@ -17,12 +17,16 @@
 </head>
 
 <body>
-    {% include 'views/header.html' %}
+    <div class="page__inner">
+        {% include 'parts/header.html' %}
 
-    {% block content %}
-    <!-- load from views -->
-    {% endblock content %}
-    {% include 'views/footer.html' %}
+        {% block content %}
+        <!-- load from views -->
+        {% endblock content %}
+
+        {% include 'parts/footer.html' %}
+    </div>
+
 </body>
 
 <script src="{% static 'js/header.js'%}"></script>
