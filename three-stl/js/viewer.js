@@ -212,7 +212,7 @@ function objectInfo(name, mesh) {
         name: name,
         position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
         rotation: { x: THREE.MathUtils.radToDeg(mesh.rotation.x), y: THREE.MathUtils.radToDeg(mesh.rotation.y), z: THREE.MathUtils.radToDeg(mesh.rotation.z) },
-        scale: { x: mesh.scale.x * 100, y: mesh.scale.y * 100, z: mesh.scale.z * 100 }
+        scale: { x: mesh.scale.x, y: mesh.scale.y, z: mesh.scale.z}
     };
 
     importedObjects.push({ mesh, objectInfo });
