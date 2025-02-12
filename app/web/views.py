@@ -13,3 +13,7 @@ def home(request):
 def login(request): 
     template = loader.get_template('views/login.html')
     return HttpResponse(template.render())
+
+def app(request):
+    template = loader.get_template('views/app.html')
+    return HttpResponse(template.render())

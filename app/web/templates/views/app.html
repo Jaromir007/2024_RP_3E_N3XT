@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}N3XT Slicer{% endblock title%}
+
+{% block content %}
+<script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+                "three/examples/jsm/loaders/STLLoader": "https://unpkg.com/three@0.150.1/examples/jsm/loaders/STLLoader.js",
+                "three/examples/jsm/controls/OrbitControls": "https://unpkg.com/three@0.150.1/examples/jsm/controls/OrbitControls.js"
+            }
+        }
+</script>
+
+<div class="app__inner">
+    <input type="file" id="fileInput" accept=".stl" style="display: none;">
+    <input type="file" id="jsonInput" accept=".json" style="display: none;">
+    <button id="clearButton">Clear</button>
+    <canvas id="mainCanvas"></canvas>
+</div>
+
+<script type="module" src="{% static 'js/slicer.js'%}"></script>
+
+{% endblock %}
