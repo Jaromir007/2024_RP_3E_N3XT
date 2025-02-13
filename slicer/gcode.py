@@ -1,6 +1,10 @@
 import math
+import time 
 
 def generate_gcode(layers, layer_height=0.2, extrusion_multiplier=0.05, feedrate=1500):
+    print("Generating G-code...")
+    t = time.time()
+
     gcode = []
     
     # G-code Header (TODO fix)
@@ -39,5 +43,8 @@ def generate_gcode(layers, layer_height=0.2, extrusion_multiplier=0.05, feedrate
     gcode.append("M104 S0 ; ")
     gcode.append("M140 S0 ; ")
     gcode.append("M84 ; ")
+
+    print("G-code generation complete!")
+    print(f"[TIMING] generate_gcode: {time.time() - t:.4f}s")
 
     return "\n".join(gcode)

@@ -32,7 +32,7 @@ gcode = generate_gcode(layers)
 with open("../models/benchy-sliced.json", "w") as f:
     json.dump(layers, f, indent=2)
 
-with open("../models/benchy-gcode.gcode", "w") as g:
-    g.write(gcode)
+# with open("../models/benchy-gcode.gcode", "w") as g:
+#     g.write(gcode)
 
 print("Slicing complete!")
