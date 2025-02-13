@@ -17,7 +17,7 @@ class PrintBed {
         this.axisSize = 10;
 
         this.xAxis = null;
-        this.yAxis = null;  
+        this.yAxis = null;
         this.zAxis = null;
 
         this.bed = null;
@@ -34,35 +34,35 @@ class PrintBed {
             roughness: 1,
             metalness: 0.1
         });
-    
+
         this.bed = new THREE.Mesh(geometry, material);
         this.bed.position.y = -this.height / 2;
-    
+
         this.gridHelper = new THREE.GridHelper(this.size, this.size / this.gridSize, this.lineColor, this.lineColor);
         this.gridHelper.position.y = 0.01;
         this.gridHelper.material.linewidth = 2;
-    
+
         this.smallGridHelper = new THREE.GridHelper(this.size, this.size / this.smallGridSize, this.smallLineColor, this.smallLineColor);
         this.smallGridHelper.position.y = 0;
         this.smallGridHelper.material.linewidth = 1;
-    
-         // X axis (red)
-         const xAxisMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-         const xAxisGeometry = new THREE.BoxGeometry(this.axisSize, 1, 1);
-         this.xAxis = new THREE.Mesh(xAxisGeometry, xAxisMaterial);
-         this.xAxis.position.set(this.axisSize / 2 - this.size / 2, 0.5, this.size / 2);
-     
-         // Y axis (green)
-         const yAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-         const yAxisGeometry = new THREE.BoxGeometry(1, 1, this.axisSize);
-         this.yAxis = new THREE.Mesh(yAxisGeometry, yAxisMaterial);
-         this.yAxis.position.set(-this.size / 2, 0.5, this.size / 2 - this.axisSize / 2);
-     
-         // Z axis (blue)
-         const zAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-         const zAxisGeometry = new THREE.BoxGeometry(1, this.axisSize, 1);
-         this.zAxis = new THREE.Mesh(zAxisGeometry, zAxisMaterial);
-         this.zAxis.position.set(-this.size / 2, this.axisSize / 2, this.size / 2);
+
+        // X axis (red)
+        const xAxisMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+        const xAxisGeometry = new THREE.BoxGeometry(this.axisSize, 1, 1);
+        this.xAxis = new THREE.Mesh(xAxisGeometry, xAxisMaterial);
+        this.xAxis.position.set(this.axisSize / 2 - this.size / 2, 0.5, this.size / 2);
+
+        // Y axis (green)
+        const yAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        const yAxisGeometry = new THREE.BoxGeometry(1, 1, this.axisSize);
+        this.yAxis = new THREE.Mesh(yAxisGeometry, yAxisMaterial);
+        this.yAxis.position.set(-this.size / 2, 0.5, this.size / 2 - this.axisSize / 2);
+
+        // Z axis (blue)
+        const zAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+        const zAxisGeometry = new THREE.BoxGeometry(1, this.axisSize, 1);
+        this.zAxis = new THREE.Mesh(zAxisGeometry, zAxisMaterial);
+        this.zAxis.position.set(-this.size / 2, this.axisSize / 2, this.size / 2);
     }
 
     render() {
@@ -101,6 +101,94 @@ class Light {
     }
 }
 
+class Model extends THREE.Mesh {
+    constructor(geometry, material, name) {
+        super(geometry, material);
+        this.name = name;
+        this.selected = false;
+
+        this.corners = [];
+        this.edges = [];
+    }
+
+    createBoundingBox() {
+        if (this.boundingBox) {
+            return;
+        }
+
+        const box = new THREE.Box3().setFromObject(this);
+        const cornerGeometry = new THREE.SphereGeometry(0.5, 8, 8);
+        const cornerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+        this.corners = [
+            new THREE.Vector3(box.min.x, box.min.y, box.min.z),
+            new THREE.Vector3(box.min.x, box.min.y, box.max.z),
+            new THREE.Vector3(box.min.x, box.max.y, box.min.z),
+            new THREE.Vector3(box.min.x, box.max.y, box.max.z),
+            new THREE.Vector3(box.max.x, box.min.y, box.min.z),
+            new THREE.Vector3(box.max.x, box.min.y, box.max.z),
+            new THREE.Vector3(box.max.x, box.max.y, box.min.z),
+            new THREE.Vector3(box.max.x, box.max.y, box.max.z)
+        ].map(corner => {
+            const cornerMesh = new THREE.Mesh(cornerGeometry, cornerMaterial);
+            cornerMesh.position.copy(corner);
+            scene.add(cornerMesh);
+            return cornerMesh;
+        });
+
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+
+        this.edges = [
+            [this.corners[0], this.corners[1]],
+            [this.corners[0], this.corners[2]],
+            [this.corners[0], this.corners[4]],
+            [this.corners[1], this.corners[3]],
+            [this.corners[1], this.corners[5]],
+            [this.corners[2], this.corners[3]],
+            [this.corners[2], this.corners[6]],
+            [this.corners[3], this.corners[7]],
+            [this.corners[4], this.corners[5]],
+            [this.corners[4], this.corners[6]],
+            [this.corners[5], this.corners[7]],
+            [this.corners[6], this.corners[7]]
+        ].map(([start, end]) => {
+            const edgeGeometry = new THREE.BufferGeometry();
+            const vertices = new Float32Array([
+                start.position.x, start.position.y, start.position.z,
+                end.position.x, end.position.y, end.position.z
+            ]);
+            edgeGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            const edge = new THREE.Line(edgeGeometry, edgeMaterial);
+            scene.add(edge);
+            return edge;
+        });
+    }
+
+    removeBoundingBox() {
+        console.log('Removing bounding box');
+
+        this.corners.forEach(corner => {
+            scene.remove(corner);
+            corner.geometry.dispose();
+            corner.material.dispose();
+        });
+
+        this.edges.forEach(edge => {
+            scene.remove(edge);
+        });
+
+        this.corners = [];
+        this.edges = [];
+
+        console.log('Bounding box removed');
+    }
+
+    onClick() {
+        this.selected = !this.selected;
+        this.boundingBox = (this.selected ? this.createBoundingBox() : this.removeBoundingBox());
+    }
+}
+
 let scene, camera, renderer, controls, printBed, light;
 let imported = [];
 
@@ -129,14 +217,14 @@ function init() {
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.PAN 
+        RIGHT: THREE.MOUSE.PAN
     };
 
     printBed = new PrintBed(200, 1);
     light = new Light();
 
     printBed.render();
-    light.render(); 
+    light.render();
 
     document.getElementById('fileInput').addEventListener('change', loadSTL);
     document.getElementById('jsonInput').addEventListener('change', loadJson);
@@ -231,17 +319,16 @@ function loadSTL(event) {
 
         geometry.translate(-center.x, -center.y, -center.z);
 
-        const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-        const mesh = new THREE.Mesh(geometry, material);
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+        const model = new Model(geometry, material, file.name);
 
-        mesh.rotation.set(-Math.PI / 2, 0, 0);
+        model.rotation.set(-Math.PI / 2, 0, 0);
+        model.position.y = -bbox.min.z;
 
-        mesh.position.y = -bbox.min.z;
+        scene.add(model);
+        imported.push(model);
 
-        scene.add(mesh);
-        imported.push(mesh);
-
-        console.log('STL file imported:', mesh);
+        console.log('STL file imported:', model);
     };
     reader.readAsArrayBuffer(file);
 }
@@ -277,6 +364,27 @@ function drawLayers(layers) {
     imported.push(lines);
     scene.add(lines);
 }
+
+function onDocumentMouseDown(event) {
+    event.preventDefault();
+
+    const mouse = new THREE.Vector2();
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(imported, true);
+
+    if (intersects.length > 0) {
+        const selectedObject = intersects[0].object;
+        selectedObject.onClick();
+        console.log('Selected object:', selectedObject);
+    }
+}
+
+window.addEventListener('mousedown', onDocumentMouseDown, false);
 
 function clearScene() {
     imported.forEach(mesh => {
