@@ -2,8 +2,107 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
-let scene, camera, renderer, controls, bed;
-let importedObjects = [];
+class PrintBed {
+    constructor(size, height) {
+        this.size = size;
+        this.height = height;
+
+        this.color = 0x131313;
+        this.lineColor = 0x666666;
+        this.smallLineColor = 0x555555;
+
+        this.gridSize = 50;
+        this.smallGridSize = 10;
+
+        this.axisSize = 10;
+
+        this.xAxis = null;
+        this.yAxis = null;  
+        this.zAxis = null;
+
+        this.bed = null;
+        this.gridHelper = null;
+        this.smallGridHelper = null;
+
+        this.init();
+    }
+
+    init() {
+        const geometry = new THREE.BoxGeometry(this.size, this.height, this.size);
+        const material = new THREE.MeshStandardMaterial({
+            color: this.color,
+            roughness: 1,
+            metalness: 0.1
+        });
+    
+        this.bed = new THREE.Mesh(geometry, material);
+        this.bed.position.y = -this.height / 2;
+    
+        this.gridHelper = new THREE.GridHelper(this.size, this.size / this.gridSize, this.lineColor, this.lineColor);
+        this.gridHelper.position.y = 0.01;
+        this.gridHelper.material.linewidth = 2;
+    
+        this.smallGridHelper = new THREE.GridHelper(this.size, this.size / this.smallGridSize, this.smallLineColor, this.smallLineColor);
+        this.smallGridHelper.position.y = 0;
+        this.smallGridHelper.material.linewidth = 1;
+    
+         // X axis (red)
+         const xAxisMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+         const xAxisGeometry = new THREE.BoxGeometry(this.axisSize, 1, 1);
+         this.xAxis = new THREE.Mesh(xAxisGeometry, xAxisMaterial);
+         this.xAxis.position.set(this.axisSize / 2 - this.size / 2, 0.5, this.size / 2);
+     
+         // Y axis (green)
+         const yAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+         const yAxisGeometry = new THREE.BoxGeometry(1, 1, this.axisSize);
+         this.yAxis = new THREE.Mesh(yAxisGeometry, yAxisMaterial);
+         this.yAxis.position.set(-this.size / 2, 0.5, this.size / 2 - this.axisSize / 2);
+     
+         // Z axis (blue)
+         const zAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+         const zAxisGeometry = new THREE.BoxGeometry(1, this.axisSize, 1);
+         this.zAxis = new THREE.Mesh(zAxisGeometry, zAxisMaterial);
+         this.zAxis.position.set(-this.size / 2, this.axisSize / 2, this.size / 2);
+    }
+
+    render() {
+        scene.add(this.bed);
+        scene.add(this.gridHelper);
+        scene.add(this.smallGridHelper);
+        scene.add(this.xAxis);
+        scene.add(this.yAxis);
+        scene.add(this.zAxis);
+    }
+}
+
+
+class Light {
+    constructor() {
+        this.color = 0xffffff;
+        this.position = { x: 100, y: 100, z: 100 };
+        this.light = new THREE.DirectionalLight(0xffffff, 0.3);
+        this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
+
+        this.init();
+    }
+
+    init() {
+        this.light.position.set(this.position.x, this.position.y, this.position.z);
+        this.hemisphereLight.position.set(this.position.x, this.position.y, this.position.z);
+    }
+
+    setPosition(x, y, z) {
+        this.position = { x, y, z };
+    }
+
+    render() {
+        scene.add(this.light);
+        scene.add(this.hemisphereLight);
+    }
+}
+
+let scene, camera, renderer, controls, printBed, light;
+let imported = [];
 
 init();
 
@@ -30,13 +129,14 @@ function init() {
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
-        // RIGHT: THREE.MOUSE.PAN 
-        // TODO fix returning back to position
+        RIGHT: THREE.MOUSE.PAN 
     };
 
+    printBed = new PrintBed(200, 1);
+    light = new Light();
 
-    addPrintBed();
-    addLighting();
+    printBed.render();
+    light.render(); 
 
     document.getElementById('fileInput').addEventListener('change', loadSTL);
     document.getElementById('jsonInput').addEventListener('change', loadJson);
@@ -111,77 +211,6 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-function addPrintBed() {
-    const bedSize = 250;
-    const bedHeight = 2;
-    const bedColor = 0x131313;
-    const lineColor = 0x666666;
-    const smallLineColor = 0x555555;
-
-    const bedGeometry = new THREE.BoxGeometry(bedSize, bedHeight, bedSize);
-    const bedMaterial = new THREE.MeshStandardMaterial({
-        color: bedColor,
-        roughness: 1,
-        metalness: 0.1
-    });
-
-    bed = new THREE.Mesh(bedGeometry, bedMaterial);
-    bed.position.y = -bedHeight / 2;
-    scene.add(bed);
-
-    const gridSize = 50;
-    const gridHelper = new THREE.GridHelper(bedSize, bedSize / gridSize, lineColor, lineColor);
-    gridHelper.position.y = 0.01;
-    gridHelper.material.linewidth = 2;
-    scene.add(gridHelper);
-
-    const smallGridSize = 10;
-    const smallGridHelper = new THREE.GridHelper(bedSize, bedSize / smallGridSize, smallLineColor, smallLineColor);
-    smallGridHelper.position.y = 0;
-    smallGridHelper.material.linewidth = 1;
-    scene.add(smallGridHelper);
-
-    const borderMaterial = new THREE.LineBasicMaterial({ color: lineColor, linewidth: 10 });
-    const borderGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-bedSize / 2, 0.02, -bedSize / 2),
-        new THREE.Vector3(bedSize / 2, 0.02, -bedSize / 2),
-        new THREE.Vector3(bedSize / 2, 0.02, bedSize / 2),
-        new THREE.Vector3(-bedSize / 2, 0.02, bedSize / 2),
-        new THREE.Vector3(-bedSize / 2, 0.02, -bedSize / 2)
-    ]);
-    const border = new THREE.Line(borderGeometry, borderMaterial);
-    scene.add(border);
-
-    const axisSize = 12;
-
-    // X axis (red)
-    const xAxisMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-    const xAxisGeometry = new THREE.BoxGeometry(axisSize, 1, 1);
-    const xAxis = new THREE.Mesh(xAxisGeometry, xAxisMaterial);
-    xAxis.position.set(axisSize / 2 - bedSize / 2, 0.5, bedSize / 2);
-    scene.add(xAxis);
-
-    // Y axis (green)
-    const yAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const yAxisGeometry = new THREE.BoxGeometry(1, 1, axisSize);
-    const yAxis = new THREE.Mesh(yAxisGeometry, yAxisMaterial);
-    yAxis.position.set(-bedSize / 2, 0.5, bedSize / 2 - axisSize / 2);
-    scene.add(yAxis);
-
-    // Z axis (blue)
-    const zAxisMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff });
-    const zAxisGeometry = new THREE.BoxGeometry(1, axisSize, 1);
-    const zAxis = new THREE.Mesh(zAxisGeometry, zAxisMaterial);
-    zAxis.position.set(-bedSize / 2, axisSize / 2, bedSize / 2);
-    scene.add(zAxis);
-}
-
-function addLighting() {
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(10, 10, 10);
-    scene.add(light);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
-}
 
 function loadSTL(event) {
     const file = event.target.files[0];
@@ -210,24 +239,11 @@ function loadSTL(event) {
         mesh.position.y = -bbox.min.z;
 
         scene.add(mesh);
-        objectInfo(file.name, mesh);
+        imported.push(mesh);
 
         console.log('STL file imported:', mesh);
     };
     reader.readAsArrayBuffer(file);
-}
-
-function objectInfo(name, mesh) {
-    const objectInfo = {
-        name: name,
-        position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
-        rotation: { x: THREE.MathUtils.radToDeg(mesh.rotation.x), y: THREE.MathUtils.radToDeg(mesh.rotation.y), z: THREE.MathUtils.radToDeg(mesh.rotation.z) },
-        scale: { x: mesh.scale.x, y: mesh.scale.y, z: mesh.scale.z }
-    };
-
-    importedObjects.push({ mesh, objectInfo });
-
-    console.log('Object created:', objectInfo);
 }
 
 function loadJson(event) {
@@ -258,26 +274,26 @@ function drawLayers(layers) {
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
     const lines = new THREE.LineSegments(geometry, material);
 
-    importedObjects.push(lines);
+    imported.push(lines);
     scene.add(lines);
 }
 
 function clearScene() {
-    importedObjects.forEach(obj => {
-        if (obj.mesh) {
-            scene.remove(obj.mesh);
-            obj.mesh.geometry.dispose();
-            if (Array.isArray(obj.mesh.material)) {
-                obj.mesh.material.forEach(mat => mat.dispose());
+    imported.forEach(mesh => {
+        if (mesh) {
+            scene.remove(mesh);
+            mesh.geometry.dispose();
+            if (Array.isArray(mesh.material)) {
+                mesh.material.forEach(mat => mat.dispose());
             } else {
-                obj.mesh.material.dispose();
+                mesh.material.dispose();
             }
         } else {
-            scene.remove(obj);
+            scene.remove(mesh);
         }
     });
 
-    importedObjects = [];
+    imported = [];
 
     console.log('Scene cleared');
 
