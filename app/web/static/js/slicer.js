@@ -107,18 +107,19 @@ class Model extends THREE.Mesh {
         this.name = name;
         this.selected = false;
 
+        this.color = 0xffffff;
+        this.colorSelected = 0x00ff00;
+
+        this.material = new THREE.MeshStandardMaterial({ color: this.color });
+
         this.corners = [];
         this.edges = [];
     }
 
     createBoundingBox() {
-        if (this.boundingBox) {
-            return;
-        }
-
         const box = new THREE.Box3().setFromObject(this);
         const cornerGeometry = new THREE.SphereGeometry(0.5, 8, 8);
-        const cornerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const cornerMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 
         this.corners = [
             new THREE.Vector3(box.min.x, box.min.y, box.min.z),
@@ -136,7 +137,7 @@ class Model extends THREE.Mesh {
             return cornerMesh;
         });
 
-        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 
         this.edges = [
             [this.corners[0], this.corners[1]],
@@ -165,7 +166,7 @@ class Model extends THREE.Mesh {
     }
 
     removeBoundingBox() {
-        console.log('Removing bounding box');
+        if (!this.corners.length) return;
 
         this.corners.forEach(corner => {
             scene.remove(corner);
@@ -179,13 +180,23 @@ class Model extends THREE.Mesh {
 
         this.corners = [];
         this.edges = [];
+    }
 
-        console.log('Bounding box removed');
+    setColor(color) {
+        this.material.color.set(color);
     }
 
     onClick() {
         this.selected = !this.selected;
         this.boundingBox = (this.selected ? this.createBoundingBox() : this.removeBoundingBox());
+        this.setColor(this.selected ? this.colorSelected : this.color);
+    }
+
+    dispose() {
+        this.removeBoundingBox();
+        scene.remove(this);
+        this.geometry.dispose();
+        this.material.dispose();
     }
 }
 
@@ -387,20 +398,7 @@ function onDocumentMouseDown(event) {
 window.addEventListener('mousedown', onDocumentMouseDown, false);
 
 function clearScene() {
-    imported.forEach(mesh => {
-        if (mesh) {
-            scene.remove(mesh);
-            mesh.geometry.dispose();
-            if (Array.isArray(mesh.material)) {
-                mesh.material.forEach(mat => mat.dispose());
-            } else {
-                mesh.material.dispose();
-            }
-        } else {
-            scene.remove(mesh);
-        }
-    });
-
+    imported.forEach(model => model.dispose());
     imported = [];
 
     console.log('Scene cleared');
