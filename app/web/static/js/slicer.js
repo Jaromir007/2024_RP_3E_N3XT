@@ -107,7 +107,7 @@ class Model extends THREE.Mesh {
         this.name = name;
         this.selected = false;
 
-        this.color = 0xffffff;
+        this.color = 0xff8c00;
         this.colorSelected = 0x00ff00;
 
         this.material = new THREE.MeshStandardMaterial({ color: this.color });
