@@ -178,7 +178,7 @@ function addPrintBed() {
 
 function addLighting() {
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(100, 100, 100);
+    light.position.set(10, 10, 10);
     scene.add(light);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 }
