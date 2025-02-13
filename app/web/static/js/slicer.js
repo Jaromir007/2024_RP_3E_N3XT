@@ -2,19 +2,45 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+class Config {
+    // Print bed
+    static PRINT_BED_SIZE = 200;
+    static PRINT_BED_HEIGHT = 1;
+    static GRID_SIZE = 50;
+    static SMALL_GRID_SIZE = 10;
+    static AXIS_SIZE = 10;
+    static PRINT_BED_COLOR = 0x131313;
+    static LINE_COLOR = 0x666666;
+    static SMALL_LINE_COLOR = 0x555555;
+
+    // Light
+    static LIGHT_COLOR = 0xffffff;
+    static LIGHT_INTENSITY = 0.3;
+    static HEMISPHERE_LIGHT_COLOR = 0x444444;
+    static HEMISPHERE_LIGHT_INTENSITY = 0.8;
+    static LIGHT_POSITION = { x: 0, y: 100, z: 0 };
+
+    // Model
+    static MODEL_COLOR = 0xff8c00;
+    static MODEL_COLOR_SELECTED = 0x00ff00;
+    static CORNER_COLOR = 0xffffff;
+    static EDGE_COLOR = 0xffffff;
+    static EDGE_WIDTH = 1;
+}
+
 class PrintBed {
-    constructor(size, height) {
-        this.size = size;
-        this.height = height;
+    constructor() {
+        this.size = Config.PRINT_BED_SIZE;
+        this.height = Config.PRINT_BED_HEIGHT;
 
-        this.color = 0x131313;
-        this.lineColor = 0x666666;
-        this.smallLineColor = 0x555555;
+        this.color = Config.PRINT_BED_COLOR;
+        this.lineColor = Config.LINE_COLOR;
+        this.smallLineColor = Config.SMALL_LINE_COLOR;
 
-        this.gridSize = 50;
-        this.smallGridSize = 10;
+        this.gridSize = Config.GRID_SIZE;
+        this.smallGridSize = Config.SMALL_GRID_SIZE;
 
-        this.axisSize = 10;
+        this.axisSize = Config.AXIS_SIZE;
 
         this.xAxis = null;
         this.yAxis = null;
@@ -78,10 +104,10 @@ class PrintBed {
 
 class Light {
     constructor() {
-        this.color = 0xffffff;
-        this.position = { x: 100, y: 100, z: 100 };
-        this.light = new THREE.DirectionalLight(0xffffff, 0.3);
-        this.hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
+        this.color = Config.LIGHT_COLOR;
+        this.position = Config.LIGHT_POSITION;
+        this.light = new THREE.DirectionalLight(Config.LIGHT_COLOR, Config.LIGHT_INTENSITY);
+        this.hemisphereLight = new THREE.HemisphereLight(Config.LIGHT_COLOR, Config.HEMISPHERE_LIGHT_COLOR, Config.HEMISPHERE_LIGHT_INTENSITY);
 
         this.init();
     }
@@ -89,10 +115,6 @@ class Light {
     init() {
         this.light.position.set(this.position.x, this.position.y, this.position.z);
         this.hemisphereLight.position.set(this.position.x, this.position.y, this.position.z);
-    }
-
-    setPosition(x, y, z) {
-        this.position = { x, y, z };
     }
 
     render() {
@@ -107,10 +129,14 @@ class Model extends THREE.Mesh {
         this.name = name;
         this.selected = false;
 
-        this.color = 0xff8c00;
-        this.colorSelected = 0x00ff00;
+        this.color = Config.MODEL_COLOR;
+        this.colorSelected = Config.MODEL_COLOR_SELECTED;
 
-        this.material = new THREE.MeshStandardMaterial({ color: this.color });
+        this.material = new THREE.MeshStandardMaterial({
+            color: this.color,
+            roughness: 0.5,
+            metalness: 0.3
+        });
 
         this.corners = [];
         this.edges = [];
@@ -186,7 +212,7 @@ class Model extends THREE.Mesh {
         this.material.color.set(color);
     }
 
-    onClick() {
+    clicked() {
         this.selected = !this.selected;
         this.boundingBox = (this.selected ? this.createBoundingBox() : this.removeBoundingBox());
         this.setColor(this.selected ? this.colorSelected : this.color);
@@ -199,6 +225,11 @@ class Model extends THREE.Mesh {
         this.material.dispose();
     }
 }
+
+
+
+// -------------------------------------------------------------
+
 
 let scene, camera, renderer, controls, printBed, light;
 let imported = [];
@@ -241,13 +272,14 @@ function init() {
     document.getElementById('jsonInput').addEventListener('change', loadJson);
     document.getElementById('clearButton').addEventListener('click', clearScene);
 
+    renderer.domElement.addEventListener('click', selectObject, false);
     window.addEventListener('resize', onWindowResize);
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', cameraPosition);
 
     animate();
 }
 
-function handleKeyDown(event) {
+function cameraPosition(event) {
     switch (event.key.toLowerCase()) {
         case 'b': // Reset 
             controls.reset();
@@ -309,7 +341,6 @@ function animate() {
     controls.update();
     renderer.render(scene, camera);
 }
-
 
 function loadSTL(event) {
     const file = event.target.files[0];
@@ -376,7 +407,7 @@ function drawLayers(layers) {
     scene.add(lines);
 }
 
-function onDocumentMouseDown(event) {
+function selectObject(event) {
     event.preventDefault();
 
     const mouse = new THREE.Vector2();
@@ -390,12 +421,11 @@ function onDocumentMouseDown(event) {
 
     if (intersects.length > 0) {
         const selectedObject = intersects[0].object;
-        selectedObject.onClick();
+        selectedObject.clicked();
         console.log('Selected object:', selectedObject);
     }
 }
 
-window.addEventListener('mousedown', onDocumentMouseDown, false);
 
 function clearScene() {
     imported.forEach(model => model.dispose());
