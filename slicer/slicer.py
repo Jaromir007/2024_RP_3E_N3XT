@@ -2,6 +2,7 @@ import time
 import json
 import struct
 from monotone_chain import MonotoneChain
+from gcode_generator import GCodeGenerator
 
 class Slicer:
     def __init__(self):
@@ -110,9 +111,12 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 
 stl_path = os.path.join(base_dir, "../models/benchy.stl")
 sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
+gcode_path = os.path.join(base_dir, "../models/benchy-gcode.gcode")
+
 
 # stl_path = os.path.join(base_dir, "../models/cube.stl")
 # sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
+# gcode_path = os.path.join(base_dir, "../models/cube-gcode.gcode")
 
 triangles = parseSTL(stl_path)
 
@@ -121,5 +125,12 @@ layers = slicer.slice(triangles)
 
 with open(sliced_path, "w") as f:
     json.dump(layers, f, indent=2)
+
+gg = GCodeGenerator(layers)
+gcode = gg.generate_gcode()
+
+with open(gcode_path, "w") as f:
+    for command in gcode:
+        f.write(command + "\n")
 
 print("Slicing complete!")
