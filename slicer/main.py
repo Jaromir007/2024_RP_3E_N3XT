@@ -23,13 +23,13 @@ def parseSTL(fileIn):
 
 
 
-triangles = parseSTL("../models/3dbenchy.stl")
+triangles = parseSTL("../models/cube.stl")
 
 slicer = Slicer()
 layers = slicer.slice(triangles)
 gcode = generate_gcode(layers)
 
-with open("../models/benchy-sliced.json", "w") as f:
+with open("../models/cube-sliced.json", "w") as f:
     json.dump(layers, f, indent=2)
 
 # with open("../models/benchy-gcode.gcode", "w") as g:
