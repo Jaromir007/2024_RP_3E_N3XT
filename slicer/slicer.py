@@ -1,7 +1,7 @@
 import time
 import json
 import struct
-from monotone import MonotoneChain
+from monotone_chain import MonotoneChain
 
 class Slicer:
     def __init__(self):
