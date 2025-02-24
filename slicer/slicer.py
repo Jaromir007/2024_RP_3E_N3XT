@@ -1,7 +1,7 @@
 import time
 import json
 import struct
-import bisect
+from monotone import MonotoneChain
 
 class Slicer:
     def __init__(self):
@@ -11,6 +11,8 @@ class Slicer:
         self.triangle_bins = {}
         self.z_values = []
         self.start_time = 0
+
+        self.mc = MonotoneChain()
 
     def _precompute_z_bounds(self):
         self.triangle_bins.clear()
@@ -47,7 +49,11 @@ class Slicer:
                     points = self._intersect_triangle(tri, z)
                     if points:
                         intersections.extend(points)
-        return intersections if intersections else None
+        
+        if intersections:
+            return self.mc.get_outline(intersections)
+        else: 
+            return None
 
     def _intersect_triangle(self, tri, z):
         edges = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
@@ -61,7 +67,7 @@ class Slicer:
                 y = round(v1[1] + t * (v2[1] - v1[1]), 5)
                 points.add((x, y))
 
-        return list(points) if len(points) == 2 else None
+        return points if points else None
 
     def _reset(self):
         self.triangles = []
@@ -101,8 +107,13 @@ def parseSTL(fileIn):
 import os
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-stl_path = os.path.join(base_dir, "../models/cube.stl")
-sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
+
+stl_path = os.path.join(base_dir, "../models/benchy.stl")
+sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
+
+# stl_path = os.path.join(base_dir, "../models/cube.stl")
+# sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
+
 triangles = parseSTL(stl_path)
 
 slicer = Slicer()

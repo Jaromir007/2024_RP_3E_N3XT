@@ -382,7 +382,7 @@ function loadJson(event) {
     const reader = new FileReader();
     reader.onload = function (e) {
         const layers = JSON.parse(e.target.result);
-        drawLayers(layers);
+        drawPoints(layers);
     };
     reader.readAsText(file);
 }
@@ -406,6 +406,28 @@ function drawLayers(layers) {
     imported.push(lines);
     scene.add(lines);
 }
+
+function drawPoints(layers) {
+    layers.forEach((layer, i) => {
+        const zHeight = i * 0.2;
+        const points = new THREE.BufferGeometry();
+        const vertices = [];
+        const color = 0xff0000;
+
+        layer.forEach(p => {
+            vertices.push(p[0], zHeight, p[1]);
+        });
+
+        points.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+        const material = new THREE.PointsMaterial({ color, size: 2, sizeAttenuation: false });
+        const pointsMesh = new THREE.Points(points, material);
+
+        scene.add(pointsMesh);
+        imported.push(pointsMesh);
+    });
+}
+
 
 function selectObject(event) {
     event.preventDefault();
