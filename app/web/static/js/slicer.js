@@ -401,7 +401,7 @@ function drawLayers(layers) {
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    const lines = new THREE.LineLoop(geometry, material);
+    const lines = new THREE.LineSegments(geometry, material);
 
     imported.push(lines);
     scene.add(lines);

@@ -2,10 +2,18 @@ class MonotoneChain:
     def __init__(self):
         pass
 
+    def _remove_duplicates(self, points):
+        unique = []
+        for p in points:
+            if p not in unique:
+                unique.append(p)
+        return unique
+
     def _cross_product(self, p, q, r):
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
 
     def _convex_hull(self, points):
+        self._remove_duplicates(points)
         points.sort()
         lower = []
         for p in points:

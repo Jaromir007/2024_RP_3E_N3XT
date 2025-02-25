@@ -1,7 +1,6 @@
 import time
 import json
 import struct
-from monotone_chain import MonotoneChain
 from gcode_generator import GCodeGenerator
 
 class Slicer:
@@ -26,7 +25,6 @@ class Slicer:
         self.z_values = sorted(set(self.z_values))
 
     def _slice_model(self):
-        t = time.time()
         z_min, z_max = self.z_values[0], self.z_values[-1]
         layers = []
         
@@ -64,19 +62,6 @@ class Slicer:
                 points.add((x, y))
 
         return points if points else None
-    
-    def _remove_duplicates(self, layers):
-        # seen = set()
-        # cleared = []
-        # for layer in layers:
-        #     layer_new = []
-        #     for p in layer:
-        #         if tuple(p) not in seen:
-        #             seen.add(tuple(p))
-        #             layer_new.append(p)
-        #     cleared.append(layer_new)
-        # return cleared
-        return layers
 
     def _reset(self):
         self.triangles = []
@@ -93,11 +78,9 @@ class Slicer:
         self._precompute_z_bounds()
         layers = self._slice_model()
         print(f"[INFO] Total points generated:", sum(len(layer) for layer in layers))
-        layers_cleared = self._remove_duplicates(layers)
-        print(f"[INFO] Total points after clearing from duplicates:", sum(len(layer) for layer in layers_cleared))
         print(f"[TIMING] Slicing took: {time.time() - self.start_time:.4f}s")
         self._reset()
-        return layers_cleared
+        return layers
 
 
 
@@ -139,11 +122,10 @@ layers = slicer.slice(triangles)
 with open(sliced_path, "w") as f:
     json.dump(layers, f, indent=2)
 
-gg = GCodeGenerator(layers)
-gcode = gg.generate_gcode()
+gg = GCodeGenerator()
+gcode = gg.generate_gcode([layers])
 
 with open(gcode_path, "w") as f:
-    for command in gcode:
-        f.write(command + "\n")
+    f.write(gcode)
 
 print("Slicing complete!")

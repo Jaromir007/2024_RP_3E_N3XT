@@ -1,59 +1,54 @@
-import time
-
 class GCodeGenerator:
-    def __init__(self, layers, layer_height=0.2, extrusion_multiplier=0.05, speed=1500):
-        self.layers = layers
+    def __init__(self, layer_height=0.2, nozzle_diameter=0.4, filament_diameter=1.75):
         self.layer_height = layer_height
-        self.extrusion_multiplier = extrusion_multiplier
-        self.speed = speed
-        self.e_value = 0 
+        self.nozzle_diameter = nozzle_diameter
+        self.filament_area = math.pi * (filament_diameter / 2) ** 2
+        self.gcode = []
+        self.e_position = 0
 
-    def distance(self, p1, p2):
-        return ((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2) ** 0.5
-
-    def generate_gcode(self):
-        t = time.time()
-        if not self.layers:
-            return [";"]
-
-        gcode = [
-            "; START GCODE",
-            "G21 ; Set units to millimeters",
+    def add_header(self):
+        self.gcode.extend([
+            "G21 ; Set units to mm",
             "G90 ; Absolute positioning",
-            "M82 ; Absolute extrusion mode",
-            "G28 ; Home all axes"
-        ]
-
-        for layer_index, layer in enumerate(self.layers):
-            if not layer:
-                continue
-
-            z_height = self.layer_height * (layer_index + 1)
-            gcode.append(f"G1 Z{z_height:.2f} F1200 ; Move to layer height {layer_index + 1}")
-
-            start_x, start_y = layer[0]
-            gcode.append(f"G0 X{start_x:.2f} Y{start_y:.2f} F3000 ; Move to start of layer {layer_index + 1}")
-
-            for i in range(1, len(layer)):
-                x, y = layer[i]
-                e_increment = self.distance(layer[i - 1], (x, y)) * self.extrusion_multiplier
-                self.e_value += e_increment
-                gcode.append(f"G1 X{x:.2f} Y{y:.2f} E{self.e_value:.4f} F{self.speed}")
-
-            e_increment = self.distance(layer[-1], layer[0]) * self.extrusion_multiplier
-            self.e_value += e_increment
-            gcode.append(f"G1 X{start_x:.2f} Y{start_y:.2f} E{self.e_value:.4f} F{self.speed}")
-
-        gcode.extend([
-            "G1 Z10 F1200 ; Lift nozzle",
-            "G0 X0 Y0 ; Move to home",
-            "M104 S0 ; Turn off extruder",
-            "M140 S0 ; Turn off bed",
-            "M107 ; Turn off fan",
-            "M84 ; Disable motors",
-            "; END GCODE"
+            "M104 S200 ; Set extruder temperature",
+            "M109 S200 ; Wait for temperature",
+            "M82 ; Extruder absolute mode",
+            "G28 ; Home all axes",
+            "G92 E0 ; Reset extrusion distance"
         ])
 
-        print(f"[INFO] Generated {len(gcode)} lines of G-code")
-        print(f"[TIMING] GCode generation: {time.time() - t:.4f}s")
-        return gcode
+    def add_footer(self):
+        self.gcode.extend([
+            "M104 S0 ; Turn off extruder",
+            "M140 S0 ; Turn off bed",
+            "M84 ; Disable motors"
+        ])
+
+    def calculate_extrusion(self, distance):
+        return round((distance * self.nozzle_diameter * self.layer_height) / self.filament_area, 5)
+
+    def generate_layer(self, contours, z_height):
+        self.gcode.append(f"G0 Z{z_height:.2f} F120 ;")
+        current_z = 0; 
+        for contour in contours:
+            self.gcode.append(f"G0 X{contour[0][0]:.2f} Y{contour[0][1]:.2f} F3000 ;")
+            for i in range(1, len(contour)):
+                x1, y1 = contour[i - 1]
+                x2, y2 = contour[i]
+                distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+                e_value = self.calculate_extrusion(distance)
+                self.e_position += e_value
+                self.gcode.append(f"G1 X{x2:.2f} Y{y2:.2f} E{self.e_position:.5f} F1200 ;")
+
+            self.gcode.append(f"G0 Z{current_z + self.layer_height:.2f} F120 ; Move up")
+            self.gcode.append(f"G1 X{contour[0][0]:.2f} Y{contour[0][1]:.2f} E{self.e_position:.5f} ;")
+            current_z += self.layer_height
+
+    def generate_gcode(self, layers):
+        self.add_header()
+        z_height = self.layer_height
+        for contours in layers:
+            self.generate_layer(contours, z_height)
+            z_height += self.layer_height
+        self.add_footer()
+        return "\n".join(self.gcode)
