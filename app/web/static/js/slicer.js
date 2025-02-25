@@ -382,7 +382,7 @@ function loadJson(event) {
     const reader = new FileReader();
     reader.onload = function (e) {
         const layers = JSON.parse(e.target.result);
-        drawPoints(layers);
+        drawLayers(layers);
     };
     reader.readAsText(file);
 }
@@ -401,7 +401,7 @@ function drawLayers(layers) {
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-    const lines = new THREE.LineSegments(geometry, material);
+    const lines = new THREE.LineLoop(geometry, material);
 
     imported.push(lines);
     scene.add(lines);

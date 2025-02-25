@@ -2,15 +2,6 @@ class MonotoneChain:
     def __init__(self):
         pass
 
-    def _remove_duplicates(self, points):
-        unique = []
-        seen = set()
-        for p in points:
-            if tuple(p) not in seen:
-                seen.add(tuple(p))
-                unique.append(p)
-        return unique
-
     def _cross_product(self, p, q, r):
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
 
@@ -29,5 +20,4 @@ class MonotoneChain:
         return lower[:-1] + upper[:-1]
 
     def get_outline(self, points):
-        unique_points = self._remove_duplicates(points)
-        return self._convex_hull(unique_points)
+        return self._convex_hull(points)

@@ -6,14 +6,13 @@ from gcode_generator import GCodeGenerator
 
 class Slicer:
     def __init__(self):
+        self.layer_height = 0.2
+
         self.triangles = []
         self.layers = []
-        self.layer_height = 0.2
         self.triangle_bins = {}
         self.z_values = []
         self.start_time = 0
-
-        self.mc = MonotoneChain()
 
     def _precompute_z_bounds(self):
         self.triangle_bins.clear()
@@ -39,28 +38,24 @@ class Slicer:
             z = round(self.layer_height + z, 2)
         
         self.layers = layers
-        print(f"[TIMING] _slice_model: {time.time() - t:.4f}s")
         return self.layers
 
     def _slice_at_z(self, z):
         intersections = []
-        for (z_min, z_max), tris in self.triangle_bins.items():
+        for (z_min, z_max), triangles in self.triangle_bins.items():
             if z_min <= z <= z_max:
-                for tri in tris:
+                for tri in triangles:
                     points = self._intersect_triangle(tri, z)
                     if points:
                         intersections.extend(points)
         
-        if intersections:
-            return self.mc.get_outline(intersections)
-        else: 
-            return None
+        return intersections if intersections else None
 
     def _intersect_triangle(self, tri, z):
-        edges = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
+        vertices = [(tri[i], tri[(i + 1) % 3]) for i in range(3)]
         points = set()
 
-        for v1, v2 in edges:
+        for v1, v2 in vertices:
             z1, z2 = v1[2], v2[2]
             if (z1 < z < z2) or (z2 < z < z1):
                 t = (z - z1) / (z2 - z1)
@@ -69,6 +64,19 @@ class Slicer:
                 points.add((x, y))
 
         return points if points else None
+    
+    def _remove_duplicates(self, layers):
+        # seen = set()
+        # cleared = []
+        # for layer in layers:
+        #     layer_new = []
+        #     for p in layer:
+        #         if tuple(p) not in seen:
+        #             seen.add(tuple(p))
+        #             layer_new.append(p)
+        #     cleared.append(layer_new)
+        # return cleared
+        return layers
 
     def _reset(self):
         self.triangles = []
@@ -84,9 +92,14 @@ class Slicer:
         self.triangles = triangles
         self._precompute_z_bounds()
         layers = self._slice_model()
+        print(f"[INFO] Total points generated:", sum(len(layer) for layer in layers))
+        layers_cleared = self._remove_duplicates(layers)
+        print(f"[INFO] Total points after clearing from duplicates:", sum(len(layer) for layer in layers_cleared))
         print(f"[TIMING] Slicing took: {time.time() - self.start_time:.4f}s")
         self._reset()
-        return layers
+        return layers_cleared
+
+
 
 def parseSTL(fileIn):
     triangles = []
@@ -109,14 +122,14 @@ import os
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
-stl_path = os.path.join(base_dir, "../models/benchy.stl")
-sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
-gcode_path = os.path.join(base_dir, "../models/benchy-gcode.gcode")
+# stl_path = os.path.join(base_dir, "../models/benchy.stl")
+# sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
+# gcode_path = os.path.join(base_dir, "../models/benchy-gcode.gcode")
 
 
-# stl_path = os.path.join(base_dir, "../models/cube.stl")
-# sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
-# gcode_path = os.path.join(base_dir, "../models/cube-gcode.gcode")
+stl_path = os.path.join(base_dir, "../models/cube.stl")
+sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
+gcode_path = os.path.join(base_dir, "../models/cube-gcode.gcode")
 
 triangles = parseSTL(stl_path)
 
