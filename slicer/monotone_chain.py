@@ -13,7 +13,7 @@ class MonotoneChain:
         return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0])
 
     def _convex_hull(self, points):
-        self._remove_duplicates(points)
+        points = self._remove_duplicates(points)
         points.sort()
         lower = []
         for p in points:
@@ -25,7 +25,7 @@ class MonotoneChain:
             while len(upper) >= 2 and self._cross_product(upper[-2], upper[-1], p) <= 0:
                 upper.pop()
             upper.append(p)
-        return lower[:-1] + upper[:-1]
+        return lower[:-1] + upper[:-1] + [lower[0]]
 
     def get_outline(self, points):
         return self._convex_hull(points)

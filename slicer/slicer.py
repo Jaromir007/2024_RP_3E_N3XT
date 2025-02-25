@@ -2,6 +2,8 @@ import time
 import json
 import struct
 from gcode_generator import GCodeGenerator
+from monotone_chain import MonotoneChain
+
 
 class Slicer:
     def __init__(self):
@@ -105,14 +107,14 @@ import os
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 
-# stl_path = os.path.join(base_dir, "../models/benchy.stl")
-# sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
-# gcode_path = os.path.join(base_dir, "../models/benchy-gcode.gcode")
+stl_path = os.path.join(base_dir, "../models/benchy.stl")
+sliced_path = os.path.join(base_dir, "../models/benchy-sliced.json")
+gcode_path = os.path.join(base_dir, "../models/benchy-gcode.gcode")
 
 
-stl_path = os.path.join(base_dir, "../models/cube.stl")
-sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
-gcode_path = os.path.join(base_dir, "../models/cube-gcode.gcode")
+# stl_path = os.path.join(base_dir, "../models/cube.stl")
+# sliced_path = os.path.join(base_dir, "../models/cube-sliced.json")
+# gcode_path = os.path.join(base_dir, "../models/cube-gcode.gcode")
 
 triangles = parseSTL(stl_path)
 
@@ -122,8 +124,13 @@ layers = slicer.slice(triangles)
 with open(sliced_path, "w") as f:
     json.dump(layers, f, indent=2)
 
+mc = MonotoneChain()
+hull = []
+for layer in layers:
+    hull.append(mc.get_outline(layer))
+
 gg = GCodeGenerator()
-gcode = gg.generate_gcode([layers])
+gcode = gg.generate_gcode([hull])
 
 with open(gcode_path, "w") as f:
     f.write(gcode)

@@ -1,3 +1,5 @@
+import math
+
 class GCodeGenerator:
     def __init__(self, layer_height=0.2, nozzle_diameter=0.4, filament_diameter=1.75):
         self.layer_height = layer_height

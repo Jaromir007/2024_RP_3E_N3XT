@@ -382,7 +382,7 @@ function loadJson(event) {
     const reader = new FileReader();
     reader.onload = function (e) {
         const layers = JSON.parse(e.target.result);
-        drawLayers(layers);
+        drawPoints(layers);
     };
     reader.readAsText(file);
 }
