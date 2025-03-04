@@ -5,6 +5,12 @@ N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal
 
 [Prezentace 2](https://docs.google.com/presentation/d/1lx2NM3tQIRyjscBn8-69G_tDTQ_a8WnBYybl524v9OQ/edit?usp=sharing)
 
+[Obhajoba SOČ](https://docs.google.com/presentation/d/1NoC7e-Ibjq2_CpCtp5y8QGFANqurjdLrVnFvech1Zno/edit?usp=sharing)
+
+Pro přepsání do WASM máme vedlejší repozitář, ve kterém se nachází také statická verze stránky. 
+
+[N3XT WASM](https://github.com/Jaromir007/n3xt_wasm)
+
 ## How to run:
 
 1. **Create a virtual environment:**
