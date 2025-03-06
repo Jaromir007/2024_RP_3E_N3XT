@@ -7,9 +7,7 @@ N3XT - Jaromír Obitko, Matěj Kryštof Zich, Michal Drápal
 
 [Obhajoba SOČ](https://docs.google.com/presentation/d/1NoC7e-Ibjq2_CpCtp5y8QGFANqurjdLrVnFvech1Zno/edit?usp=sharing)
 
-Pro přepsání do WASM máme vedlejší repozitář, ve kterém se nachází také statická verze stránky. 
-
-[N3XT WASM](https://github.com/Jaromir007/n3xt_wasm)
+Pro přepsání do WASM máme vedlejší repozitář, ve kterém se nachází také statická verze stránky. [N3XT WASM](https://github.com/Jaromir007/n3xt_wasm)
 
 ## Konvence 
 
@@ -24,6 +22,7 @@ Každá "django" složka má v sobě podsložku, která definuje pro co je její
 `static/web/css/main.css`
 
 ⚠️ **Špatně:**
+
 `static/css/main.css`
 `templates/layout.html`
 
