@@ -11,6 +11,22 @@ Pro přepsání do WASM máme vedlejší repozitář, ve kterém se nachází ta
 
 [N3XT WASM](https://github.com/Jaromir007/n3xt_wasm)
 
+## Konvence 
+
+Každá "django" složka má v sobě podsložku, která definuje pro co je její obsah určený. (Jména souborů se budou často opakovat, tímto se zamezí souvisejícím problémům.)
+
+#### Příklad: 
+
+✅ **Správně:**
+
+`static/global/css/main.css`
+`templates/global/layout.html`
+`static/web/css/main.css`
+
+⚠️ **Špatně:**
+`static/css/main.css`
+`templates/layout.html`
+
 ## How to run:
 
 1. **Create a virtual environment:**
