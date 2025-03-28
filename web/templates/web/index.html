@@ -1,0 +1,80 @@
+{% extends 'global/layout.html' %}
+{% load static %}
+
+{% block title %}N3XT Slicer{% endblock title%}
+
+{% block content %}
+
+<main class="main">
+    <div class="hero">
+        <div class="hero__inner container">
+            <div class="hero__left">
+                <div class="hero__text">
+                    <h1 class="hero__title">The Future of 3D&nbsp;Slicing</h1>
+                    <p class="hero__description">N3XT is a web-based slicer that allows you to slice your 3D models
+                        right from your browser. No
+                        need to download or install anything. Just upload your model and start slicing!
+                    </p>
+                </div>
+                <div class="hero__stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p><strong>Slicing has never been so easy!</strong></p>
+
+                <div class="hero__button-box">
+                    <a href="#" class="thm-btn btn--large btn--secondary">Open Slicer
+                    </a>
+                    <a href="#" class="thm-btn btn--large">Learn more
+                    </a>
+                </div>
+
+            </div>
+            <div class="hero__right">
+                <img src="{% static 'global/images/hero.png' %}" alt="" class="hero__img">
+            </div>
+        </div>
+    </div>
+    <section class="section features">
+        <div class="features__inner container">
+            <div class="section__header section__header--center">
+                <span class="section__tag">Features</span>
+                <h2 class="section__title">Slice directly from your browser</h2>
+                <p class="section__text">
+                    Downloading slicer app takes time - especially if you often switch between operation systems and
+                    devices.
+                    That's why we created N3XT - a great solution for everyone.
+                </p>
+            </div>
+            <div class="features__grid">
+                <div class="features__single">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <h3>No login required</h3>
+                    <p>Yes, that's right - you don't have to login to use our slicer. Login is required only if you want
+                        to use features like saving your models or slicing preferences.
+                    </p>
+                </div>
+                <div class="features__single">
+                    <i class="fa-solid fa-check"></i>
+                    <h3>Easy to use</h3>
+                    <p>All you need is stable internet connection. If you still get lost, just head over to our tutorial
+                        and
+                        read the basics.</p>
+                </div>
+                <div class="features__single">
+                    <i class="fa-regular fa-credit-card"></i>
+                    <h3>Free and open source</h3>
+                    <p>Our goal is to democratize 3D slicing. We developed a new slicer from scratch, focusing on
+                        simplicity and ease of use, making it accessible for everyone.
+                    </p>
+                </div>
+            </div>
+    </section>
+
+</main>
+
+
+{% endblock content %}
