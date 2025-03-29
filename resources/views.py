@@ -15,7 +15,10 @@ def upload(request):
             post.save()
             return render(request, 'resources/upload.html', {'form': form, 'success': True})
 
-    return render(request, 'resources/upload.html')
+    else:
+        form = PostForm()
+
+    return render(request, 'resources/upload.html', {'form': form})
 
 def postlist(request):
     posts = Post.objects.all()

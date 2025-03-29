@@ -1,0 +1,16 @@
+{% extends 'global/layout.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock title%}
+
+{% block content %}
+
+<main class="main">
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.date }}</p>
+    <div class="content">
+        {{ post.body|safe }}
+    </div>
+</main>
+
+{% endblock content %}

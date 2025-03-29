@@ -1,0 +1,18 @@
+{% extends 'global/layout.html' %}
+{% load static %}
+
+{% block title %}Upload article{% endblock title%}
+
+{% block content %}
+
+<main class="main">
+    <h2>Upload article as .md</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+</main>
+
+{% endblock content %}

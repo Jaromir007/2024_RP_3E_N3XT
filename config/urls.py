@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('web.urls')),
     path('slicer/', include('slicer.urls')),
     path('resources/', include('resources.urls')),
+    path('accounts/', include('allauth.urls')),
 ]

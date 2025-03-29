@@ -1,0 +1,23 @@
+{% extends 'global/layout.html' %}
+{% load static %}
+
+{% block title %}Blog{% endblock title%}
+
+{% block content %}
+
+    <main class="main">
+
+        {% if user.is_staff %}
+            <a href="/resources/upload">Upload article</a>
+        {% endif %}
+
+        <h1>Blog</h1>
+
+        {% for post in posts %}
+            <h2><a href="/resources/blog/{{ post.slug }}">{{ post.title }}</a></h2>
+            <p>{{ post.date }}</p>
+            
+        {% endfor %}
+    </main>
+
+{% endblock content %}

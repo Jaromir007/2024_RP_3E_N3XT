@@ -523,7 +523,15 @@ canvas {
     font-size: 0.875rem;
 }
 
+.page__inner {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
+.page__inner > main {
+    flex-grow: 1;
+}
 
 /* Display only on mobile screen */
 
