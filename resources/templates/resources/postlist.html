@@ -5,13 +5,15 @@
 
 {% block content %}
 
-    <main class="main">
-
-        {% if user.is_staff %}
-            <a href="/resources/upload">Upload article</a>
-        {% endif %}
+    <main class="main blog">
 
         <h1>Blog</h1>
+        <br>
+
+        {% if user.is_staff %}
+            <a class="thm-btn" href="/resources/upload">Upload article</a>
+            <br>
+        {% endif %}
 
         {% for post in posts %}
             <h2><a href="/resources/blog/{{ post.slug }}">{{ post.title }}</a></h2>

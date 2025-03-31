@@ -533,6 +533,23 @@ canvas {
     flex-grow: 1;
 }
 
+/* Blog */
+.blog {
+    padding: var(--section-gap) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.blog__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gap-lg);
+}
+
+
+
 /* Display only on mobile screen */
 
 @media (min-width: 600px) {
